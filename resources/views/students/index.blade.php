@@ -45,8 +45,8 @@
                                     {{ $student->age }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <a href="#" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">Edit</a>
-                                    <a href="#" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 ml-4">Delete</a>
+                                    <a href="{{ route('students.edit', $student->id) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">Edit</a>
+                                    <button type="button" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 ml-4" onclick="confirmDelete('{{ $student->id }}')">Delete</button>
                                 </td>
                             </tr>
                             @endforeach
@@ -57,3 +57,26 @@
         </div>
     </div>
 </x-app-layout>
+
+
+
+<script>
+    function confirmDelete(id) {
+        alertify.confirm('Delete Confirmation', 'Are you sure you want to delete this student?',
+            function() {
+                let form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/students/${id}`;
+                form.innerHTML = `
+                    @csrf
+                    @method('DELETE')
+                `;
+                document.body.appendChild(form);
+                form.submit();
+                alertify.success('Ok');
+            },
+            function() {
+                alertify.error('Delete action canceled');
+            });
+    }
+</script>
